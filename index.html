@@ -1,455 +1,768 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Haus Tacorari is a creative label focusing on independent game development, Japanese design aesthetics, fashion, and creative web services. A solo project by a Japanese creator based in Germany.">
-    <meta name="keywords" content="Independent games, Japanese design, fashion, creative tools, web services, game development, indie games, minimalist design, digital art, creative innovation">
-    <meta name="author" content="Haus Tacorari">
-    <title>Haus Tacorari - Indie Games, Japanese Design & Creative Web</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary-dark: #0f0f0f;
-            --secondary-dark: #1a1a1a;
-            --accent-gold: #d4af37;
-            --accent-silver: #c0c0c0;
-            --text-primary: #f5f5f5;
-            --text-secondary: #a0a0a0;
-            --text-muted: #666666;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Examined Decision</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0d0b;
+    --surface: #161510;
+    --border: #2a2820;
+    --text: #e8e2d4;
+    --muted: #6b6557;
+    --accent: #c8a96e;
+    --accent-dim: #7a6440;
+    --danger: #8b4a3a;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Mono',monospace; font-weight:300; min-height:100vh; overflow-x:hidden; }
+  body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:1000; opacity:0.4; }
+  .container { max-width:740px; margin:0 auto; padding:80px 32px; }
+  header { margin-bottom:64px; opacity:0; animation:fadeUp 0.8s ease forwards; }
+  .header-label { font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:var(--accent); margin-bottom:16px; }
+  h1 { font-family:'Cormorant Garamond',serif; font-weight:300; font-size:clamp(36px,6vw,52px); line-height:1.1; color:var(--text); margin-bottom:12px; }
+  h1 em { font-style:italic; color:var(--accent); }
+  .subtitle { font-size:12px; color:var(--muted); letter-spacing:0.05em; line-height:1.6; }
 
-        body {
-            font-family: 'Inter', 'Noto Sans JP', sans-serif;
-            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
-            color: var(--text-primary);
-            cursor: default;
-            overflow-x: hidden;
-        }
+  /* API key bar */
 
-        .bg-glass {
-            background: rgba(26, 26, 26, 0.8);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
 
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            animation: fadeInUp 1s ease-out forwards;
-        }
+  .section { margin-bottom:40px; opacity:0; animation:fadeUp 0.8s ease forwards; }
+  .section:nth-child(3) { animation-delay:0.1s; }
+  .section:nth-child(4) { animation-delay:0.2s; }
+  .section:nth-child(5) { animation-delay:0.3s; }
+  .section-label { font-size:10px; letter-spacing:0.25em; text-transform:uppercase; color:var(--muted); margin-bottom:20px; }
 
-        @keyframes fadeInUp {
-            to { 
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+  /* Philosopher cards grid */
+  .era-group { margin-bottom:28px; }
+  .era-title { font-size:9px; letter-spacing:0.3em; text-transform:uppercase; color:var(--accent-dim); margin-bottom:12px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+  .frameworks { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; }
 
-        .hover-lift:hover {
-            transform: translateY(-5px);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+  .framework-btn {
+    background:var(--surface);
+    border:1px solid var(--border);
+    color:var(--muted);
+    padding:0;
+    cursor:pointer;
+    text-align:left;
+    transition:all 0.2s ease;
+    font-family:'DM Mono',monospace;
+    font-size:11px;
+    font-weight:300;
+    overflow:hidden;
+    position:relative;
+  }
+  .framework-btn:hover { border-color:var(--accent-dim); background:#1a1914; }
+  .framework-btn.active { border-color:var(--accent); background:#1a1812; }
 
-        .hover-lift:hover .service-card {
-            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.2);
-        }
+  /* Portrait area */
+  .fw-portrait {
+    width:100%;
+    aspect-ratio:1;
+    background:#111009;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    position:relative;
+    border-bottom:1px solid var(--border);
+  }
+  .fw-portrait svg { width:100%; height:100%; }
+  .framework-btn.active .fw-portrait { border-bottom-color:var(--accent-dim); }
 
-        .elegant-button {
-            background: linear-gradient(45deg, var(--accent-gold), #f4d03f);
-            color: var(--primary-dark);
-            border: none;
-            position: relative;
-            overflow: hidden;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            transition: all 0.3s ease;
-        }
+  /* Active accent line */
+  .framework-btn.active::after {
+    content:'';
+    position:absolute;
+    top:0; left:0; right:0;
+    height:2px;
+    background:var(--accent);
+  }
 
-        .elegant-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
-        }
+  .fw-info { padding:10px 12px 12px; }
+  .fw-name { display:block; font-size:12px; color:var(--text); margin-bottom:2px; letter-spacing:0.03em; }
+  .framework-btn.active .fw-name { color:var(--accent); }
+  .fw-desc { display:block; font-size:10px; color:var(--muted); opacity:0.7; line-height:1.4; }
 
-        .elegant-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.6s;
-        }
+  /* Text input */
+  textarea { width:100%; background:var(--surface); border:1px solid var(--border); color:var(--text); padding:20px; font-family:'Cormorant Garamond',serif; font-size:18px; font-weight:300; line-height:1.6; resize:vertical; min-height:120px; outline:none; transition:border-color 0.2s; }
+  textarea::placeholder { color:var(--muted); font-style:italic; }
+  textarea:focus { border-color:var(--accent-dim); }
 
-        .elegant-button:hover::before {
-            left: 100%;
-        }
+  .submit-row { display:flex; align-items:center; gap:16px; margin-top:8px; }
+  .submit-btn { background:transparent; border:1px solid var(--accent); color:var(--accent); padding:12px 28px; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; transition:all 0.2s ease; }
+  .submit-btn:hover:not(:disabled) { background:var(--accent); color:var(--bg); }
+  .submit-btn:disabled { opacity:0.3; cursor:not-allowed; }
+  .char-count { font-size:10px; color:var(--muted); letter-spacing:0.05em; }
 
-        .text-gradient {
-            background: linear-gradient(45deg, var(--accent-gold), var(--accent-silver));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+  .response-area { margin-top:48px; border-top:1px solid var(--border); padding-top:48px; display:none; }
+  .response-area.visible { display:block; animation:fadeUp 0.6s ease forwards; }
+  .response-header { display:flex; align-items:center; gap:12px; margin-bottom:32px; }
+  .response-thinker { font-family:'Cormorant Garamond',serif; font-size:13px; font-style:italic; color:var(--accent); }
+  .response-divider { flex:1; height:1px; background:var(--border); }
+  .questions-list { list-style:none; display:flex; flex-direction:column; }
+  .question-item { padding:24px 0; border-bottom:1px solid var(--border); opacity:0; transform:translateY(8px); transition:opacity 0.4s ease,transform 0.4s ease; }
+  .question-item.visible { opacity:1; transform:translateY(0); }
+  .question-num { font-size:10px; color:var(--accent-dim); letter-spacing:0.2em; margin-bottom:8px; }
+  .question-text { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:300; line-height:1.4; color:var(--text); }
+  .question-context { font-size:11px; color:var(--muted); margin-top:8px; line-height:1.6; }
 
-        .service-card {
-            background: rgba(26, 26, 26, 0.6);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+  .loading { display:none; align-items:center; gap:12px; padding:32px 0; color:var(--muted); font-size:11px; letter-spacing:0.1em; }
+  .loading.visible { display:flex; }
+  .loading-dots { display:flex; gap:4px; }
+  .loading-dots span { width:4px; height:4px; border-radius:50%; background:var(--accent-dim); animation:pulse 1.2s ease infinite; }
+  .loading-dots span:nth-child(2) { animation-delay:0.2s; }
+  .loading-dots span:nth-child(3) { animation-delay:0.4s; }
 
-        .service-card:hover {
-            border-color: rgba(212, 175, 55, 0.3);
-            background: rgba(26, 26, 26, 0.8);
-        }
+  .error-msg { display:none; padding:16px 20px; border:1px solid var(--danger); color:#d4847a; font-size:11px; line-height:1.6; margin-top:16px; }
+  .error-msg.visible { display:block; }
 
-        .floating-particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
+  .summary-area { margin-top:40px; padding:24px; border:1px solid var(--border); background:var(--surface); display:none; }
+  .summary-area.visible { display:block; }
+  .summary-label { font-size:10px; letter-spacing:0.25em; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+  .summary-text { font-family:'Cormorant Garamond',serif; font-size:16px; font-weight:300; font-style:italic; line-height:1.7; color:var(--muted); }
 
-        .particle {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: rgba(212, 175, 55, 0.3);
-            border-radius: 50%;
-            animation: float 20s infinite linear;
-        }
+  .reset-btn { background:none; border:none; color:var(--muted); font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; margin-top:40px; padding:8px 0; text-decoration:underline; text-underline-offset:3px; transition:color 0.2s; }
+  .reset-btn:hover { color:var(--text); }
+  .reading-text { font-size:20px; line-height:1.8; }
 
-        @keyframes float {
-            0% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-100vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        .section-divider {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.3), transparent);
-            margin: 4rem 0;
-        }
-
-        .hero-text {
-            font-weight: 300;
-            letter-spacing: 2px;
-            line-height: 1.4;
-        }
-
-        .elegant-link {
-            color: var(--accent-gold);
-            text-decoration: none;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .elegant-link::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 1px;
-            background: var(--accent-gold);
-            transition: width 0.3s ease;
-        }
-
-        .elegant-link:hover::after {
-            width: 100%;
-        }
-
-        .header-nav {
-            backdrop-filter: blur(20px);
-            background: rgba(15, 15, 15, 0.9);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        @media (max-width: 640px) {
-            .hero-text {
-                font-size: 2rem;
-                letter-spacing: 1px;
-            }
-            .container {
-                padding-left: 1rem;
-                padding-right: 1rem;
-            }
-        }
-
-        .scroll-indicator {
-            position: absolute;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            color: var(--accent-gold);
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
-            40% { transform: translateX(-50%) translateY(-10px); }
-            60% { transform: translateX(-50%) translateY(-5px); }
-        }
-    </style>
+  @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes pulse { 0%,100%{opacity:0.3;transform:scale(0.8)} 50%{opacity:1;transform:scale(1)} }
+</style>
 </head>
-<body class="flex flex-col min-h-screen">
-    <!-- Floating Particles Background -->
-    <div class="floating-particles">
-        <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
-        <div class="particle" style="left: 20%; animation-delay: 2s;"></div>
-        <div class="particle" style="left: 30%; animation-delay: 4s;"></div>
-        <div class="particle" style="left: 40%; animation-delay: 6s;"></div>
-        <div class="particle" style="left: 50%; animation-delay: 8s;"></div>
-        <div class="particle" style="left: 60%; animation-delay: 10s;"></div>
-        <div class="particle" style="left: 70%; animation-delay: 12s;"></div>
-        <div class="particle" style="left: 80%; animation-delay: 14s;"></div>
-        <div class="particle" style="left: 90%; animation-delay: 16s;"></div>
+<body>
+<div class="container">
+
+  <header>
+    <div class="header-label">The Examined Decision</div>
+    <h1>Speak your<br><em>decision.</em></h1>
+    <p class="subtitle">Name the decision. Choose a thinker.<br>Receive their reading of your situation.</p>
+  </header>
+
+  <!-- ▼▼▼ Gemini APIキーをここに入力 ▼▼▼ -->
+  <div class="apikey-bar">
+    <label>Gemini API Key</label>
+    <input type="password" id="apiKeyInput" placeholder="AIza..." oninput="onKeyInput()" />
+    <span class="apikey-status missing" id="apiKeyStatus">not set</span>
+  </div>
+
+  <!-- ▲▲▲ Gemini APIキーをここに入力 ▲▲▲ -->
+
+  <div class="section">
+    <div class="section-label">01 — Choose your thinker</div>
+
+    <div class="era-group">
+      <div class="era-title">Ancient</div>
+      <div class="frameworks">
+        <button class="framework-btn" data-id="socrates" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <!-- Socrates: bald, short beard, broad nose, toga -->
+              <circle cx="60" cy="48" r="26" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
+              <!-- Bald dome -->
+              <path d="M36 50 Q38 26 60 24 Q82 26 84 50" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Eyes -->
+              <line x1="48" y1="46" x2="54" y2="46" stroke="#c8a96e" stroke-width="1.2"/>
+              <line x1="66" y1="46" x2="72" y2="46" stroke="#c8a96e" stroke-width="1.2"/>
+              <!-- Broad nose -->
+              <path d="M58 50 Q57 56 55 58 Q60 60 65 58 Q63 56 62 50" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Short thick beard -->
+              <path d="M44 64 Q50 72 60 74 Q70 72 76 64" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M46 68 Q52 76 60 78 Q68 76 74 68" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Neck + toga -->
+              <line x1="55" y1="74" x2="52" y2="84" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="65" y1="74" x2="68" y2="84" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M28 120 Q40 90 52 84 Q60 88 68 84 Q80 90 92 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M32 120 Q38 98 48 92" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
+              <path d="M88 120 Q82 98 72 92" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
+              <!-- Hemlock cup hint -->
+              <path d="M88 100 L84 115 Q90 117 94 115 L92 100 Z" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.4"/>
+            </svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Socrates</span>
+            <span class="fw-desc">Questioning & ignorance</span>
+          </div>
+        </button>
+
+        <button class="framework-btn" data-id="epictetus" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <!-- Epictetus: slave, lame, stoic expression, simple tunic -->
+              <circle cx="60" cy="46" r="24" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
+              <!-- Short hair -->
+              <path d="M38 42 Q40 24 60 22 Q80 24 82 42" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M38 42 Q36 35 40 30" fill="none" stroke="#c8a96e" stroke-width="0.8"/>
+              <!-- Eyes — steady, calm -->
+              <line x1="49" y1="44" x2="55" y2="44" stroke="#c8a96e" stroke-width="1.2"/>
+              <line x1="65" y1="44" x2="71" y2="44" stroke="#c8a96e" stroke-width="1.2"/>
+              <!-- Nose -->
+              <path d="M59 48 Q58 53 57 55 Q60 57 63 55 Q62 53 61 48" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <!-- Light beard -->
+              <path d="M45 60 Q52 68 60 70 Q68 68 75 60" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Neck -->
+              <line x1="56" y1="70" x2="54" y2="80" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="64" y1="70" x2="66" y2="80" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Simple tunic + one arm raised (teaching gesture) -->
+              <path d="M26 120 Q38 88 54 80 Q60 84 66 80 Q82 88 94 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Raised right arm -->
+              <path d="M82 92 Q94 78 98 68" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M98 68 L102 64 M98 68 L94 62" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <!-- Lame leg hint -->
+              <path d="M38 110 Q35 118 32 120" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
+            </svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Epictetus</span>
+            <span class="fw-desc">Control & acceptance</span>
+          </div>
+        </button>
+
+        <button class="framework-btn" data-id="marcus" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <!-- Marcus Aurelius: emperor, curly beard, laurel wreath -->
+              <circle cx="60" cy="46" r="24" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
+              <!-- Laurel wreath -->
+              <path d="M38 36 Q42 28 48 30 Q44 36 40 38" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <path d="M44 28 Q50 22 56 26 Q52 30 48 30" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <path d="M56 24 Q62 20 68 24 Q64 28 60 28 Q58 26 56 24" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <path d="M68 24 Q74 22 78 28 Q74 30 70 28" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <path d="M78 28 Q84 32 82 40 Q78 38 76 36" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <!-- Eyes — contemplative, slightly weary -->
+              <line x1="49" y1="44" x2="55" y2="44" stroke="#c8a96e" stroke-width="1.2"/>
+              <line x1="65" y1="44" x2="71" y2="44" stroke="#c8a96e" stroke-width="1.2"/>
+              <line x1="48" y1="42" x2="56" y2="41" stroke="#c8a96e" stroke-width="0.6" opacity="0.6"/>
+              <!-- Nose -->
+              <path d="M59 48 Q58 53 57 55 Q60 57 63 55 Q62 53 61 48" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <!-- Full curly beard -->
+              <path d="M43 60 Q46 70 52 74 Q60 78 68 74 Q74 70 77 60" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M44 64 Q47 72 52 76" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
+              <path d="M68 64 Q72 72 74 68" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
+              <path d="M52 76 Q56 80 60 80 Q64 80 68 76" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
+              <!-- Neck + imperial robes -->
+              <line x1="56" y1="78" x2="53" y2="86" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="64" y1="78" x2="67" y2="86" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M24 120 Q36 88 53 86 Q60 90 67 86 Q84 88 96 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M36 120 Q40 100 46 94" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
+              <path d="M84 120 Q80 100 74 94" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
+            </svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Marcus Aurelius</span>
+            <span class="fw-desc">Duty & impermanence</span>
+          </div>
+        </button>
+      </div>
     </div>
 
-    <!-- Header -->
-    <header class="header-nav py-4 sticky top-0 z-50">
-        <div class="container mx-auto px-4 flex justify-between items-center">
-            <a href="/" class="flex items-center group">
-                <img src="https://soyadayo.github.io/Mappon/Logo_Haus_Tacorari_small_upscaled.png" alt="Haus Tacorari Logo" class="h-10 transition-transform duration-300 group-hover:scale-110">
-                <h1 class="ml-4 text-xl font-medium text-gradient">Haus Tacorari</h1>
-            </a>
-            <nav class="hidden md:flex space-x-8">
-                <a href="#services" class="text-sm uppercase tracking-wider hover:text-yellow-400 transition-colors">Services</a>
-                <a href="#about" class="text-sm uppercase tracking-wider hover:text-yellow-400 transition-colors">About</a>
-                <a href="#contact" class="text-sm uppercase tracking-wider hover:text-yellow-400 transition-colors">Contact</a>
-            </nav>
-        </div>
-    </header>
+    <div class="era-group">
+      <div class="era-title">Modern</div>
+      <div class="frameworks">
+        <button class="framework-btn" data-id="nietzsche" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <!-- Nietzsche: massive mustache, intense brow, short hair -->
+              <circle cx="60" cy="46" r="24" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
+              <path d="M38 40 Q40 24 60 22 Q80 24 82 40" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Heavy brow -->
+              <path d="M44 40 Q52 37 56 40" fill="none" stroke="#c8a96e" stroke-width="1.4"/>
+              <path d="M64 40 Q68 37 76 40" fill="none" stroke="#c8a96e" stroke-width="1.4"/>
+              <!-- Intense eyes -->
+              <line x1="47" y1="44" x2="55" y2="44" stroke="#c8a96e" stroke-width="1.4"/>
+              <line x1="65" y1="44" x2="73" y2="44" stroke="#c8a96e" stroke-width="1.4"/>
+              <!-- Nose -->
+              <path d="M59 48 Q58 52 57 54 Q60 56 63 54 Q62 52 61 48" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <!-- MASSIVE drooping mustache -->
+              <path d="M44 60 Q52 56 60 58 Q68 56 76 60" fill="none" stroke="#c8a96e" stroke-width="1.6"/>
+              <path d="M44 60 Q40 68 38 74" fill="none" stroke="#c8a96e" stroke-width="1.4"/>
+              <path d="M76 60 Q80 68 82 74" fill="none" stroke="#c8a96e" stroke-width="1.4"/>
+              <path d="M38 74 Q44 70 52 68 Q58 68 60 70" fill="none" stroke="#c8a96e" stroke-width="0.9" opacity="0.6"/>
+              <path d="M82 74 Q76 70 68 68 Q62 68 60 70" fill="none" stroke="#c8a96e" stroke-width="0.9" opacity="0.6"/>
+              <!-- Neck + coat -->
+              <line x1="56" y1="70" x2="54" y2="80" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="64" y1="70" x2="66" y2="80" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M26 120 Q38 86 54 80 Q60 84 66 80 Q82 86 94 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M54 80 Q58 88 60 92 Q62 88 66 80" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
+            </svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Nietzsche</span>
+            <span class="fw-desc">Will & self-overcoming</span>
+          </div>
+        </button>
 
-    <!-- Hero Section -->
-    <section class="relative py-32 text-center overflow-hidden">
-        <div class="container mx-auto px-4 fade-in relative z-10">
-            <h2 class="hero-text text-6xl md:text-7xl font-light text-gradient mb-6">Haus Tacorari</h2>
-            <p class="text-lg text-gray-300 max-w-3xl mx-auto mb-8 leading-relaxed font-light">
-                Independent game development, Japanese design aesthetics, fashion, and creative web services.<br>
-                A solo project by a Japanese creator based in Germany.
-            </p>
-            <div class="mt-12 space-x-6">
-                <a href="#services" class="elegant-button px-8 py-4 rounded-none text-sm uppercase tracking-widest">Explore My Work</a>
-                <a href="#contact" class="border border-yellow-400 text-yellow-400 px-8 py-4 rounded-none text-sm uppercase tracking-widest hover:bg-yellow-400 hover:text-black transition-all duration-300">Get in Touch</a>
-            </div>
-        </div>
-        <div class="scroll-indicator">
-            <div class="mb-2">↓</div>
-            <div class="text-xs uppercase tracking-wider">Scroll</div>
-        </div>
-    </section>
+        <button class="framework-btn" data-id="sartre" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <!-- Sartre: glasses, pipe, small stature, slightly asymmetric eyes -->
+              <circle cx="60" cy="46" r="24" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
+              <path d="M38 40 Q40 24 60 22 Q80 24 82 40" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Thick-framed glasses -->
+              <rect x="44" y="39" width="14" height="10" rx="2" fill="none" stroke="#c8a96e" stroke-width="1.3"/>
+              <rect x="62" y="39" width="14" height="10" rx="2" fill="none" stroke="#c8a96e" stroke-width="1.3"/>
+              <line x1="58" y1="44" x2="62" y2="44" stroke="#c8a96e" stroke-width="1.1"/>
+              <line x1="38" y1="44" x2="44" y2="44" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="76" y1="44" x2="82" y2="44" stroke="#c8a96e" stroke-width="1"/>
+              <!-- One eye slightly off (walleye) -->
+              <circle cx="51" cy="44" r="2" fill="none" stroke="#c8a96e" stroke-width="0.8"/>
+              <circle cx="50" cy="44" r="0.8" fill="#c8a96e" opacity="0.6"/>
+              <circle cx="69" cy="44" r="2" fill="none" stroke="#c8a96e" stroke-width="0.8"/>
+              <circle cx="70" cy="44" r="0.8" fill="#c8a96e" opacity="0.6"/>
+              <!-- Nose -->
+              <path d="M59 50 Q57 55 56 57 Q60 59 64 57 Q63 55 61 50" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <!-- Thin lips -->
+              <line x1="53" y1="62" x2="67" y2="62" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Pipe -->
+              <path d="M67 64 Q74 62 78 66 Q80 70 76 72" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M76 72 Q78 78 76 80" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <!-- Smoke wisps -->
+              <path d="M76 80 Q74 74 78 70" fill="none" stroke="#c8a96e" stroke-width="0.6" opacity="0.4"/>
+              <!-- Neck + turtleneck -->
+              <line x1="56" y1="70" x2="54" y2="80" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="64" y1="70" x2="66" y2="80" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M30 120 Q42 86 54 80 Q60 84 66 80 Q78 86 90 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M52 80 Q53 86 60 88 Q67 86 68 80" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+            </svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Sartre</span>
+            <span class="fw-desc">Radical freedom</span>
+          </div>
+        </button>
 
-    <!-- Services Section -->
-    <section id="services" class="py-24 relative z-10">
-        <div class="container mx-auto px-4">
-            <div class="section-divider"></div>
-            <h2 class="text-4xl font-light text-center text-gradient mb-16 fade-in">Services</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="hover-lift fade-in">
-                    <div class="service-card p-8 rounded-sm h-full">
-                        <div class="mb-6 rounded-sm overflow-hidden">
-                            <div class="grid grid-cols-2 gap-2">
-                                <img src="https://soyadayo.github.io/Mappon/wolfgame.png" alt="Game Screenshot" class="w-full h-20 object-cover rounded">
-                                <img src="https://soyadayo.github.io/Mappon/leavesgame.png" alt="Game Screenshot" class="w-full h-20 object-cover rounded">
-                            </div>
-                        </div>
-                        <h3 class="text-xl font-medium mb-4 text-white">Game Project</h3>
-                        <p class="text-gray-400 mb-6 text-sm leading-relaxed">Dive into indie games with heartfelt stories and playful mechanics, crafted for deep emotional adventures.</p>
-                        <a href="https://www.tacorari.eu/gamehome.html" class="elegant-link text-sm uppercase tracking-wider">Play Now</a>
-                    </div>
-                </div>
-                <div class="hover-lift fade-in" style="animation-delay: 0.1s;">
-                    <div class="service-card p-8 rounded-sm h-full">
-                        <div class="mb-6 rounded-sm overflow-hidden">
-                            <img src="https://soyadayo.github.io/Mappon/mappon.png" alt="Mappon Project" class="w-full h-32 object-cover">
-                        </div>
-                        <h3 class="text-xl font-medium mb-4 text-white">Mappon</h3>
-                        <p class="text-gray-400 mb-6 text-sm leading-relaxed">A creative tool for artists to map and design, turning your ideas into vibrant realities.</p>
-                        <a href="https://www.tacorari.eu/mappon.html" class="elegant-link text-sm uppercase tracking-wider">Discover More</a>
-                    </div>
-                </div>
-                <div class="hover-lift fade-in" style="animation-delay: 0.2s;">
-                    <div class="service-card p-8 rounded-sm h-full">
-                        <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-gray-400 rounded-sm mb-6"></div>
-                        <h3 class="text-xl font-medium mb-4 text-white">Mode</h3>
-                        <p class="text-gray-400 mb-6 text-sm leading-relaxed">Urban-inspired clothing blending modern style with practical, everyday functionality.</p>
-                        <a href="https://www.redbubble.com/people/HausTacorari/shop?asc=u" target="_blank" rel="noopener noreferrer" class="elegant-link text-sm uppercase tracking-wider">Shop Now</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+        <button class="framework-btn" data-id="camus" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <!-- Camus: handsome, sharp features, trench coat, cigarette -->
+              <circle cx="60" cy="44" r="24" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
+              <path d="M38 38 Q40 22 60 20 Q80 22 82 38" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Defined cheekbones -->
+              <path d="M38 52 Q40 58 44 60" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
+              <path d="M82 52 Q80 58 76 60" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
+              <!-- Eyes — dark, romantic -->
+              <line x1="48" y1="42" x2="56" y2="42" stroke="#c8a96e" stroke-width="1.3"/>
+              <line x1="64" y1="42" x2="72" y2="42" stroke="#c8a96e" stroke-width="1.3"/>
+              <!-- Strong brow -->
+              <path d="M47 39 Q52 37 57 39" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M63 39 Q68 37 73 39" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Nose -->
+              <path d="M59 46 Q58 51 57 53 Q60 55 63 53 Q62 51 61 46" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <!-- Slight smirk -->
+              <path d="M53 60 Q60 63 67 60" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Cigarette -->
+              <line x1="67" y1="60" x2="78" y2="56" stroke="#c8a96e" stroke-width="1.2"/>
+              <line x1="78" y1="56" x2="82" y2="55" stroke="#c8a96e" stroke-width="0.9" opacity="0.5"/>
+              <path d="M82 55 Q80 50 84 46" fill="none" stroke="#c8a96e" stroke-width="0.5" opacity="0.35"/>
+              <!-- Trench coat + upturned collar -->
+              <line x1="56" y1="68" x2="52" y2="78" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="64" y1="68" x2="68" y2="78" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M22 120 Q36 84 52 78 Q56 82 60 82 Q64 82 68 78 Q84 84 98 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M52 78 Q50 86 48 90" fill="none" stroke="#c8a96e" stroke-width="0.9" opacity="0.6"/>
+              <path d="M68 78 Q70 86 72 90" fill="none" stroke="#c8a96e" stroke-width="0.9" opacity="0.6"/>
+              <!-- Coat lapels -->
+              <path d="M52 78 Q56 84 60 86" fill="none" stroke="#c8a96e" stroke-width="0.8"/>
+              <path d="M68 78 Q64 84 60 86" fill="none" stroke="#c8a96e" stroke-width="0.8"/>
+            </svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Camus</span>
+            <span class="fw-desc">Absurdity & revolt</span>
+          </div>
+        </button>
 
-    <!-- About Section -->
-    <section id="about" class="py-24 relative z-10">
-        <div class="container mx-auto px-4">
-            <div class="section-divider"></div>
-            <h2 class="text-4xl font-light text-center text-gradient mb-16 fade-in">About Haus Tacorari</h2>
-            <div class="max-w-4xl mx-auto">
-                <div class="bg-glass p-12 rounded-sm fade-in">
-                    <p class="text-gray-300 mb-8 text-lg leading-relaxed font-light">
-                        Founded in 2024, Haus Tacorari is the vision of a solo Japanese creator in Germany, blending games, Japanese aesthetics, and fashion into unique digital experiences.
-                    </p>
-                    <p class="text-gray-300 mb-12 text-lg leading-relaxed font-light">
-                        I fuse technology with traditional Japanese design, crafting meaningful journeys that cross cultural boundaries and spark creativity.
-                    </p>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-                        <div class="text-center fade-in">
-                            <div class="text-3xl font-light text-gradient mb-2">2024</div>
-                            <h4 class="text-sm uppercase tracking-wider text-gray-400">Founded</h4>
-                        </div>
-                        <div class="text-center fade-in" style="animation-delay: 0.1s;">
-                            <div class="text-3xl font-light text-gradient mb-2">Germany</div>
-                            <h4 class="text-sm uppercase tracking-wider text-gray-400">Based in</h4>
-                        </div>
-                        <div class="text-center fade-in" style="animation-delay: 0.2s;">
-                            <div class="text-3xl font-light text-gradient mb-2">Solo</div>
-                            <h4 class="text-sm uppercase tracking-wider text-gray-400">Creator</h4>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+        <button class="framework-btn" data-id="arendt" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <!-- Hannah Arendt: elegant, sharp eyes, chignon, cigarette holder -->
+              <circle cx="60" cy="44" r="23" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
+              <!-- Chignon (hair pinned back) -->
+              <path d="M40 36 Q42 22 60 20 Q78 22 80 36" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M78 36 Q84 40 82 50" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <ellipse cx="84" cy="32" rx="6" ry="8" fill="none" stroke="#c8a96e" stroke-width="0.9" opacity="0.7"/>
+              <!-- Arched brows -->
+              <path d="M47 39 Q52 36 57 39" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M63 39 Q68 36 73 39" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Intelligent eyes -->
+              <line x1="48" y1="43" x2="56" y2="43" stroke="#c8a96e" stroke-width="1.3"/>
+              <line x1="64" y1="43" x2="72" y2="43" stroke="#c8a96e" stroke-width="1.3"/>
+              <!-- Nose -->
+              <path d="M59 47 Q58 52 57 54 Q60 56 63 54 Q62 52 61 47" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <!-- Composed lips -->
+              <path d="M53 60 Q60 62 67 60" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Long cigarette holder -->
+              <line x1="67" y1="60" x2="84" y2="50" stroke="#c8a96e" stroke-width="0.9"/>
+              <line x1="84" y1="50" x2="88" y2="48" stroke="#c8a96e" stroke-width="0.7" opacity="0.4"/>
+              <!-- Neck + blouse -->
+              <line x1="56" y1="67" x2="54" y2="78" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="64" y1="67" x2="66" y2="78" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M26 120 Q40 86 54 78 Q60 82 66 78 Q80 86 94 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M54 78 Q58 86 60 90 Q62 86 66 78" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
+            </svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Hannah Arendt</span>
+            <span class="fw-desc">Action & plurality</span>
+          </div>
+        </button>
 
-    <!-- Contact Section -->
-    <section id="contact" class="py-24 relative z-10">
-        <div class="container mx-auto px-4">
-            <div class="section-divider"></div>
-            <h2 class="text-4xl font-light text-center text-gradient mb-16 fade-in">Get in Touch</h2>
-                <div class="fade-in">
-                    <h3 class="text-2xl font-light text-gradient mb-8">Contact Information</h3>
-                    <div class="space-y-6">
-                        <p class="text-gray-300 leading-relaxed">Based in Germany, collaborating globally.</p>
-                        <div>
-                            <p class="text-gray-400 text-sm uppercase tracking-wider mb-2">Email</p>
-                            <a href="mailto:rarika100@protonmail.com" class="elegant-link text-lg">rarika100@protonmail.com</a>
-                        </div>
-                        <div>
-                            <p class="text-gray-400 text-sm uppercase tracking-wider mb-2">Social</p>
-                            <div class="space-y-2">
-                                <a href="https://instagram.com/haustacorari" class="elegant-link block">Instagram</a>
-                                <a href="https://buymeacoffee.com/haustacorari" class="elegant-link block">Buy Me a Coffee</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-        </div>
-    </section>
+        <button class="framework-btn" data-id="simone" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <!-- Simone de Beauvoir: turban/head wrap, strong gaze, elegant -->
+              <circle cx="60" cy="46" r="23" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
+              <!-- Iconic turban wrap -->
+              <path d="M38 40 Q36 28 42 24 Q52 18 68 18 Q80 20 84 30 Q86 38 82 42" fill="none" stroke="#c8a96e" stroke-width="1.1"/>
+              <path d="M38 40 Q42 36 50 34 Q60 32 70 34 Q78 36 82 42" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <path d="M42 24 Q50 30 56 28 Q62 30 70 28 Q76 24 80 30" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
+              <!-- Defined brows, direct gaze -->
+              <path d="M47 42 Q52 39 57 42" fill="none" stroke="#c8a96e" stroke-width="1.1"/>
+              <path d="M63 42 Q68 39 73 42" fill="none" stroke="#c8a96e" stroke-width="1.1"/>
+              <line x1="48" y1="46" x2="56" y2="46" stroke="#c8a96e" stroke-width="1.3"/>
+              <line x1="64" y1="46" x2="72" y2="46" stroke="#c8a96e" stroke-width="1.3"/>
+              <!-- Nose -->
+              <path d="M59 50 Q58 55 57 57 Q60 59 63 57 Q62 55 61 50" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <!-- Lips -->
+              <path d="M53 62 Q60 65 67 62" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Neck + jacket -->
+              <line x1="56" y1="69" x2="54" y2="80" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="64" y1="69" x2="66" y2="80" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M26 120 Q40 86 54 80 Q60 84 66 80 Q80 86 94 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
+            </svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Simone de Beauvoir</span>
+            <span class="fw-desc">Ambiguity & ethics</span>
+          </div>
+        </button>
+      </div>
+    </div>
 
-    <!-- Footer -->
-    <footer class="bg-black border-t border-gray-800 py-16 relative z-10">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-                <div>
-                    <h4 class="text-lg font-medium text-gradient mb-6">Haus Tacorari</h4>
-                    <p class="text-gray-400 text-sm leading-relaxed">Independent game development, Japanese design aesthetics, fashion, and creative web services. A solo project blending Japanese aesthetics with German precision.</p>
-                </div>
-                <div>
-                    <h4 class="text-lg font-medium text-gradient mb-6">Services</h4>
-                    <ul class="space-y-3">
-                        <li><a href="https://www.tacorari.eu/gamehome.html" class="text-gray-400 hover:text-yellow-400 transition-colors text-sm">Games</a></li>
-                        <li><a href="https://www.tacorari.eu/mappon.html" class="text-gray-400 hover:text-yellow-400 transition-colors text-sm">Mappon</a></li>
-                        <li><a href="https://www.redbubble.com/people/HausTacorari/shop?asc=u" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-yellow-400 transition-colors text-sm">Mode</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-lg font-medium text-gradient mb-6">Company</h4>
-                    <ul class="space-y-3">
-                        <li><a href="#about" class="text-gray-400 hover:text-yellow-400 transition-colors text-sm">About</a></li>
-                        <li><a href="#contact" class="text-gray-400 hover:text-yellow-400 transition-colors text-sm">Contact</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="mt-16 pt-8 border-t border-gray-800 text-center">
-                <p class="text-gray-500 text-sm">© 2025 Haus Tacorari. All rights reserved.</p>
-                <div class="space-x-6 mt-4">
-                    <a href="#" class="text-gray-500 hover:text-yellow-400 transition-colors text-xs uppercase tracking-wider">Privacy Policy</a>
-                    <a href="#" class="text-gray-500 hover:text-yellow-400 transition-colors text-xs uppercase tracking-wider">Terms of Service</a>
-                    <a href="#" class="text-gray-500 hover:text-yellow-400 transition-colors text-xs uppercase tracking-wider">Cookie Policy</a>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <div class="era-group">
+      <div class="era-title">Contemporary</div>
+      <div class="frameworks">
+        <button class="framework-btn" data-id="foucault" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <!-- Foucault: shaved head, round glasses, intense -->
+              <circle cx="60" cy="46" r="24" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
+              <!-- Shaved head (very minimal hair) -->
+              <path d="M38 42 Q40 24 60 22 Q80 24 82 42" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.4"/>
+              <!-- Round glasses -->
+              <circle cx="51" cy="44" r="7" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
+              <circle cx="69" cy="44" r="7" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
+              <line x1="58" y1="44" x2="62" y2="44" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="36" y1="43" x2="44" y2="43" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="76" y1="43" x2="84" y2="43" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Eyes -->
+              <circle cx="51" cy="44" r="2.5" fill="none" stroke="#c8a96e" stroke-width="0.8"/>
+              <circle cx="69" cy="44" r="2.5" fill="none" stroke="#c8a96e" stroke-width="0.8"/>
+              <!-- Nose -->
+              <path d="M59 50 Q58 55 56 57 Q60 59 64 57 Q62 55 61 50" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <!-- Thin pursed lips -->
+              <line x1="53" y1="62" x2="67" y2="62" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Neck + turtleneck -->
+              <line x1="56" y1="70" x2="54" y2="80" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="64" y1="70" x2="66" y2="80" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M30 120 Q42 86 54 80 Q60 84 66 80 Q78 86 90 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M52 80 Q53 86 60 88 Q67 86 68 80" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+            </svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Foucault</span>
+            <span class="fw-desc">Power & structure</span>
+          </div>
+        </button>
 
-    <script>
-        // Smooth scroll for navigation
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
+        <button class="framework-btn" data-id="han" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <!-- Byung-Chul Han: East Asian features, contemporary, composed -->
+              <circle cx="60" cy="46" r="23" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
+              <!-- Hair — straight, side-parted -->
+              <path d="M38 40 Q40 22 60 20 Q80 22 82 40" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M40 28 Q44 34 42 42" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
+              <line x1="40" y1="28" x2="72" y2="26" stroke="#c8a96e" stroke-width="0.7" opacity="0.4"/>
+              <!-- East Asian eye shape — single eyelid, horizontal -->
+              <line x1="47" y1="44" x2="57" y2="43" stroke="#c8a96e" stroke-width="1.4"/>
+              <line x1="63" y1="43" x2="73" y2="44" stroke="#c8a96e" stroke-width="1.4"/>
+              <!-- High cheekbones -->
+              <path d="M38 52 Q40 56 44 58" fill="none" stroke="#c8a96e" stroke-width="0.6" opacity="0.4"/>
+              <path d="M82 52 Q80 56 76 58" fill="none" stroke="#c8a96e" stroke-width="0.6" opacity="0.4"/>
+              <!-- Nose — low bridge -->
+              <path d="M59 48 Q58 53 58 55 Q60 57 62 55 Q62 53 61 48" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <!-- Slight lips -->
+              <path d="M54 61 Q60 63 66 61" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Neck + contemporary jacket -->
+              <line x1="56" y1="69" x2="54" y2="80" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="64" y1="69" x2="66" y2="80" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M28 120 Q40 86 54 80 Q60 84 66 80 Q80 86 92 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M54 80 Q56 88 60 90 Q64 88 66 80" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
+              <!-- Book hint (his many thin books) -->
+              <rect x="78" y="90" width="14" height="20" rx="1" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.4"/>
+              <line x1="80" y1="90" x2="80" y2="110" stroke="#c8a96e" stroke-width="0.5" opacity="0.3"/>
+            </svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Byung-Chul Han</span>
+            <span class="fw-desc">Burnout & transparency</span>
+          </div>
+        </button>
 
-        // Remove message form functionality
-        function showConfetti() {
-            // This function is no longer needed but kept for compatibility
-        }
+        <button class="framework-btn" data-id="fisher" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <!-- Mark Fisher: melancholic, round face, slight stubble, hoodie -->
+              <circle cx="60" cy="46" r="24" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
+              <!-- Hair — unkempt, slightly long -->
+              <path d="M38 40 Q40 22 60 20 Q80 22 82 40" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M38 40 Q35 36 36 28" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.6"/>
+              <path d="M82 40 Q85 36 84 28" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.6"/>
+              <!-- Downcast eyes (melancholy) -->
+              <line x1="48" y1="44" x2="56" y2="45" stroke="#c8a96e" stroke-width="1.2"/>
+              <line x1="64" y1="45" x2="72" y2="44" stroke="#c8a96e" stroke-width="1.2"/>
+              <!-- Slight brow furrow -->
+              <path d="M48 40 Q52 38 56 40" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.6"/>
+              <path d="M64 40 Q68 38 72 40" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.6"/>
+              <!-- Nose -->
+              <path d="M59 49 Q58 54 57 56 Q60 58 63 56 Q62 54 61 49" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <!-- Slight stubble (dots) -->
+              <path d="M44 64 Q52 70 60 72 Q68 70 76 64" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.4"/>
+              <!-- Lips -->
+              <path d="M53 62 Q60 64 67 62" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Hoodie -->
+              <line x1="56" y1="72" x2="52" y2="82" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="64" y1="72" x2="68" y2="82" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M22 120 Q36 86 52 82 Q56 86 60 86 Q64 86 68 82 Q84 86 98 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Hoodie strings -->
+              <path d="M56 82 Q54 92 52 96" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
+              <path d="M64 82 Q66 92 68 96" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
+            </svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Mark Fisher</span>
+            <span class="fw-desc">Capitalist realism</span>
+          </div>
+        </button>
 
-        // Add elegant float animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes elegantFloat {
-                0% {
-                    transform: translateY(0) scale(0);
-                    opacity: 1;
-                }
-                50% {
-                    transform: translateY(-100px) scale(1);
-                    opacity: 1;
-                }
-                100% {
-                    transform: translateY(-200px) scale(0);
-                    opacity: 0;
-                }
-            }
-        `;
-        document.head.appendChild(style);
+        <button class="framework-btn" data-id="bauman" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <!-- Bauman: elderly, white hair, deeply lined face, cardigan -->
+              <circle cx="60" cy="46" r="24" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
+              <!-- Wispy white/thin hair -->
+              <path d="M38 42 Q40 24 60 22 Q80 24 82 42" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
+              <path d="M40 26 Q38 22 40 18" fill="none" stroke="#c8a96e" stroke-width="0.6" opacity="0.4"/>
+              <path d="M60 22 Q58 18 60 14" fill="none" stroke="#c8a96e" stroke-width="0.6" opacity="0.4"/>
+              <path d="M80 26 Q82 22 80 18" fill="none" stroke="#c8a96e" stroke-width="0.6" opacity="0.4"/>
+              <!-- Aged eyes, slightly drooping -->
+              <line x1="47" y1="44" x2="55" y2="45" stroke="#c8a96e" stroke-width="1.2"/>
+              <line x1="65" y1="45" x2="73" y2="44" stroke="#c8a96e" stroke-width="1.2"/>
+              <path d="M46 42 Q52 40 56 43" fill="none" stroke="#c8a96e" stroke-width="0.6" opacity="0.5"/>
+              <path d="M64 43 Q68 40 74 42" fill="none" stroke="#c8a96e" stroke-width="0.6" opacity="0.5"/>
+              <!-- Nose — aged, prominent -->
+              <path d="M58 50 Q56 55 55 58 Q60 61 65 58 Q64 55 62 50" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Deep smile lines -->
+              <path d="M44 58 Q46 66 48 70" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
+              <path d="M76 58 Q74 66 72 70" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
+              <!-- Full lips with age -->
+              <path d="M51 64 Q60 68 69 64" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Neck + cardigan -->
+              <line x1="56" y1="70" x2="53" y2="82" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="64" y1="70" x2="67" y2="82" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M24 120 Q38 88 53 82 Q60 86 67 82 Q82 88 96 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M53 82 Q56 90 60 92 Q64 90 67 82" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
+              <!-- Cardigan buttons -->
+              <circle cx="60" cy="96" r="1.5" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
+              <circle cx="60" cy="104" r="1.5" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
+            </svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Zygmunt Bauman</span>
+            <span class="fw-desc">Liquid modernity</span>
+          </div>
+        </button>
 
-        // Fade in elements on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
+        <button class="framework-btn" data-id="harari" onclick="selectFramework(this)">
+          <div class="fw-portrait">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <!-- Harari: short hair, beard, lean, modern look -->
+              <circle cx="60" cy="44" r="23" fill="none" stroke="#c8a96e" stroke-width="1.2"/>
+              <!-- Short neat hair -->
+              <path d="M39 40 Q41 24 60 22 Q79 24 81 40" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M39 40 Q38 34 40 28" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.5"/>
+              <!-- Expressive eyes, alert -->
+              <line x1="48" y1="42" x2="56" y2="42" stroke="#c8a96e" stroke-width="1.3"/>
+              <line x1="64" y1="42" x2="72" y2="42" stroke="#c8a96e" stroke-width="1.3"/>
+              <!-- Nose -->
+              <path d="M59 46 Q58 51 57 53 Q60 55 63 53 Q62 51 61 46" fill="none" stroke="#c8a96e" stroke-width="0.9"/>
+              <!-- Short beard / stubble -->
+              <path d="M44 60 Q52 68 60 70 Q68 68 76 60" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M46 64 Q52 70 60 72 Q68 70 74 64" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.5"/>
+              <!-- Lips -->
+              <path d="M54 60 Q60 62 66 60" fill="none" stroke="#c8a96e" stroke-width="0.8" opacity="0.7"/>
+              <!-- Neck + minimal top (meditation, vegan aesthetic) -->
+              <line x1="56" y1="67" x2="54" y2="78" stroke="#c8a96e" stroke-width="1"/>
+              <line x1="64" y1="67" x2="66" y2="78" stroke="#c8a96e" stroke-width="1"/>
+              <path d="M28 120 Q40 84 54 78 Q60 82 66 78 Q80 84 92 120" fill="none" stroke="#c8a96e" stroke-width="1"/>
+              <!-- Tiny DNA helix / data motif -->
+              <path d="M84 88 Q88 92 84 96 Q88 100 84 104" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.4"/>
+              <path d="M92 88 Q88 92 92 96 Q88 100 92 104" fill="none" stroke="#c8a96e" stroke-width="0.7" opacity="0.4"/>
+              <line x1="84" y1="92" x2="92" y2="92" stroke="#c8a96e" stroke-width="0.5" opacity="0.3"/>
+              <line x1="84" y1="96" x2="92" y2="96" stroke="#c8a96e" stroke-width="0.5" opacity="0.3"/>
+              <line x1="84" y1="100" x2="92" y2="100" stroke="#c8a96e" stroke-width="0.5" opacity="0.3"/>
+            </svg>
+          </div>
+          <div class="fw-info">
+            <span class="fw-name">Yuval Noah Harari</span>
+            <span class="fw-desc">Algorithms & meaning</span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.animationPlayState = 'running';
-                }
-            });
-        }, observerOptions);
+  <div class="section">
+    <div class="section-label">02 — Describe your situation</div>
+    <textarea id="decisionInput" placeholder="I need to decide whether to leave my job. I've been here five years and the stability feels comfortable, but..." oninput="updateCount()"></textarea>
+    <div class="submit-row">
+      <button class="submit-btn" id="submitBtn" onclick="runSession()" disabled>Read it</button>
+      <span class="char-count" id="charCount">0 characters</span>
+    </div>
+    <div class="error-msg" id="errorMsg"></div>
+  </div>
 
-        document.querySelectorAll('.fade-in').forEach(el => {
-            el.style.animationPlayState = 'paused';
-            observer.observe(el);
-        });
-    </script>
+  <div class="loading" id="loading">
+    <div class="loading-dots"><span></span><span></span><span></span></div>
+    <span id="loadingText">thinking</span>
+  </div>
+
+  <div class="response-area" id="responseArea">
+    <div class="response-header">
+      <span class="response-thinker" id="responseThinker"></span>
+      <div class="response-divider"></div>
+    </div>
+    <ul class="questions-list" id="questionsList"></ul>
+    <div class="summary-area" id="summaryArea">
+      <div class="summary-label">The core of it</div>
+      <p class="summary-text" id="summaryText"></p>
+    </div>
+    <button class="reset-btn" onclick="resetSession()">Start a new session</button>
+  </div>
+
+</div>
+
+<script>
+const FRAMEWORKS = {
+  socrates: { name:"Socrates", prompt:`You are Socrates giving an oracular reading. Speak as if you have just examined their soul and seen what they cannot see themselves. Reference the examined life, the nature of their ignorance, and what wisdom is truly asking of them now. Respond ONLY in JSON: {"thinker":"Socrates","reading":"...","tension":"..."} No preamble. JSON only.` },
+  epictetus: { name:"Epictetus", prompt:`You are Epictetus giving an oracular reading. Speak from hard-won wisdom — you were a slave who found freedom through philosophy. Tell them clearly what is in their control and what is not, and what their soul already knows but is avoiding. Respond ONLY in JSON: {"thinker":"Epictetus","reading":"...","tension":"..."} No preamble. JSON only.` },
+  marcus: { name:"Marcus Aurelius", prompt:`You are Marcus Aurelius giving an oracular reading. Speak with the quiet authority of someone who carries great responsibility yet remains grounded. Draw on impermanence, duty, and the view from above. Respond ONLY in JSON: {"thinker":"Marcus Aurelius","reading":"...","tension":"..."} No preamble. JSON only.` },
+  nietzsche: { name:"Nietzsche", prompt:`You are Nietzsche giving an oracular reading. Speak with fire. Challenge them on whether they are choosing from strength or resentment. Invoke the eternal recurrence — would they choose this again forever? Push them toward becoming who they truly are. Respond ONLY in JSON: {"thinker":"Nietzsche","reading":"...","tension":"..."} No preamble. JSON only.` },
+  sartre: { name:"Sartre", prompt:`You are Sartre giving an oracular reading. Speak with cold clarity about radical freedom. Name the bad faith you detect in their situation. Remind them that they are condemned to be free, and that not choosing is also a choice. Respond ONLY in JSON: {"thinker":"Sartre","reading":"...","tension":"..."} No preamble. JSON only.` },
+  camus: { name:"Camus", prompt:`You are Camus giving an oracular reading. Speak with Mediterranean warmth and philosophical courage. Acknowledge the absurdity of their situation without despair. Guide them toward revolt and full presence — against resignation, toward life. Respond ONLY in JSON: {"thinker":"Camus","reading":"...","tension":"..."} No preamble. JSON only.` },
+  arendt: { name:"Hannah Arendt", prompt:`You are Hannah Arendt giving an oracular reading. Speak about action, natality, and the courage to begin something new in the world. Ask them to consider how this decision appears in the shared world, not just their inner life. Respond ONLY in JSON: {"thinker":"Hannah Arendt","reading":"...","tension":"..."} No preamble. JSON only.` },
+  simone: { name:"Simone de Beauvoir", prompt:`You are Simone de Beauvoir giving an oracular reading. Speak about the ethics of ambiguity and the weight of genuine freedom. Name whether they are living authentically or performing a role assigned to them by others. Respond ONLY in JSON: {"thinker":"Simone de Beauvoir","reading":"...","tension":"..."} No preamble. JSON only.` },
+  foucault: { name:"Foucault", prompt:`You are Michel Foucault giving an oracular reading. Speak about the invisible power structures shaping their sense of what is normal or responsible. Help them see whose interests are served by the path that feels obvious. Respond ONLY in JSON: {"thinker":"Foucault","reading":"...","tension":"..."} No preamble. JSON only.` },
+  han: { name:"Byung-Chul Han", prompt:`You are Byung-Chul Han giving an oracular reading. Speak quietly and with melancholy precision about exhaustion, the tyranny of positivity, and the loss of the Other. Name whether their struggle is the achievement society consuming them from within. Respond ONLY in JSON: {"thinker":"Byung-Chul Han","reading":"...","tension":"..."} No preamble. JSON only.` },
+  fisher: { name:"Mark Fisher", prompt:`You are Mark Fisher giving an oracular reading. Speak with urgency and tenderness. Name the way capitalist realism has colonized their imagination. Help them see what futures have been foreclosed — and whether any remain open. Respond ONLY in JSON: {"thinker":"Mark Fisher","reading":"...","tension":"..."} No preamble. JSON only.` },
+  bauman: { name:"Zygmunt Bauman", prompt:`You are Zygmunt Bauman giving an oracular reading. Speak with the wisdom of someone who has watched modernity liquefy. Name whether they are trying to build something solid in a world that rewards keeping all options open. Respond ONLY in JSON: {"thinker":"Zygmunt Bauman","reading":"...","tension":"..."} No preamble. JSON only.` },
+  harari: { name:"Yuval Noah Harari", prompt:`You are Yuval Noah Harari giving an oracular reading. Speak from the long view — evolutionary, historical, algorithmic. Help them see whether they are the author of this decision or a biological script running its code. Ask what meaning truly means when biochemistry is involved. Respond ONLY in JSON: {"thinker":"Yuval Noah Harari","reading":"...","tension":"..."} No preamble. JSON only.` },
+}
+
+let selectedFramework = null;
+
+
+
+function selectFramework(btn) {
+  document.querySelectorAll('.framework-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedFramework = btn.dataset.id;
+  updateSubmitState();
+}
+
+function updateCount() {
+  const val = document.getElementById('decisionInput').value;
+  document.getElementById('charCount').textContent = val.length + ' characters';
+  updateSubmitState();
+}
+
+function updateSubmitState() {
+  const hasText = document.getElementById('decisionInput').value.trim().length > 20;
+  document.getElementById('submitBtn').disabled = !(hasText && selectedFramework);
+}
+
+const loadingPhrases = ['consulting the text','reading your situation','finding the words','almost there'];
+
+async function runSession() {
+  const input = document.getElementById('decisionInput').value.trim();
+  if (!input || !selectedFramework) return;
+  const fw = FRAMEWORKS[selectedFramework];
+  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('errorMsg').classList.remove('visible');
+  document.getElementById('responseArea').classList.remove('visible');
+  const loading = document.getElementById('loading');
+  loading.classList.add('visible');
+  let phraseIdx = 0;
+  const phraseInterval = setInterval(() => {
+    phraseIdx = (phraseIdx+1) % loadingPhrases.length;
+    document.getElementById('loadingText').textContent = loadingPhrases[phraseIdx];
+  }, 1800);
+  try {
+    const response = await fetch('/api/ask', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ input, systemPrompt: fw.prompt })
+    });
+    const data = await response.json();
+    if (data.error) throw new Error(data.error);
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const clean = text.replace(/```json\n?|```/g,'').trim();
+    const jsonMatch = clean.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('Response format error. Please try again.');
+    const parsed = JSON.parse(jsonMatch[0]);
+    clearInterval(phraseInterval);
+    loading.classList.remove('visible');
+    renderResponse(parsed);
+  } catch(err) {
+    clearInterval(phraseInterval);
+    loading.classList.remove('visible');
+    document.getElementById('submitBtn').disabled = false;
+    const errorEl = document.getElementById('errorMsg');
+    errorEl.textContent = 'Error: ' + (err.message || 'API connection failed. Check your key and try again.');
+    errorEl.classList.add('visible');
+  }
+}
+
+function renderResponse(data) {
+  document.getElementById('responseThinker').textContent = data.thinker;
+  const list = document.getElementById('questionsList');
+  list.innerHTML = '';
+  if (data.reading) {
+    const li = document.createElement('li');
+    li.className = 'question-item';
+    li.innerHTML = `<div class="question-text reading-text">${data.reading}</div>`;
+    list.appendChild(li);
+    setTimeout(() => li.classList.add('visible'), 100);
+  }
+  if (data.tension) {
+    document.getElementById('summaryText').textContent = data.tension;
+    setTimeout(() => document.getElementById('summaryArea').classList.add('visible'), 400);
+  }
+  document.getElementById('responseArea').classList.add('visible');
+}
+
+function resetSession() {
+  document.querySelectorAll('.framework-btn').forEach(b => b.classList.remove('active'));
+  selectedFramework = null;
+  document.getElementById('decisionInput').value = '';
+  document.getElementById('charCount').textContent = '0 characters';
+  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('responseArea').classList.remove('visible');
+  document.getElementById('summaryArea').classList.remove('visible');
+  document.getElementById('errorMsg').classList.remove('visible');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
 </body>
 </html>
